@@ -3,11 +3,11 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/c4e1d839eec3468cadfe351d64dc1ac4)](https://app.codacy.com/manual/Jxck-S/plane-notify?utm_source=github.com&utm_medium=referral&utm_content=Jxck-S/plane-notify&utm_campaign=Badge_Grade_Settings)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-yellow.svg)](https://opensource.org/licenses/)
 
-Notify If a Selected Plane has taken off or landed using Python with OpenSky or ADS-B Exchange Data, outputs location of takeoff location of landing and takeoff by reverse lookup of coordinates.
+Notify if configured planes have taken off or landed using Python with OpenSky or ADS-B Exchange Data, outputs location of takeoff location of landing and takeoff by reverse lookup of coordinates.
 
-### Branches
+## Branches
 
-Their are two branches of this program single is the original only supports one plane works with OpenSky and ADSBX. Multi branch is the new version supports multiple planes currently only works with ADSBX, will eventually implement OpenSky. Your current viewing single.
+Their are two branches of this program single is the original only supports one plane works with OpenSky and ADSBX. Multi branch is the new version supports multiple planes, mainly built around being based on ADSBX data, OpenSky data in this version may have issues, didn't test much. Your current viewing multi.
 
 ### Discord Output Example
 
@@ -17,25 +17,17 @@ Their are two branches of this program single is the original only supports one 
 
 [ExImages](./ExImages)
 
-## Why I made it
+### Background
 
-Made it so I could track Elon Musk's Jet and share with others of his whereabouts on Twitter. [![Twitter Follow](https://img.shields.io/twitter/follow/ElonJet.svg?style=social)](https://twitter.com/ElonJet)
+I made this program so I could track Elon Musk's Jet and share with others of his whereabouts on Twitter. [![Twitter Follow](https://img.shields.io/twitter/follow/ElonJet.svg?style=social)](https://twitter.com/ElonJet) I have now Expanded and run multiple accounts for multiple planes, a list of the accounts here [plane-notify Twitter List](https://twitter.com/i/lists/1307414615316467715)
 
-## How It works
+### Contributing
 
--   Takes data about every 15 seconds from OpenSky Network or ADS-B Exchange and compares it to previous data with what I've defined as a landing or takeoff event.
+ Im open to any help or suggestions, I realize theirs much better ways im sure to do alot of my methods, im only a noob. I'll accept pull requests. If you'd like to discuss join <https://JacksTech.net/Discord>
 
--   A takeoff event is the plane is not on the ground, below 10k feet and ((previously no data and now getting data) or was previously on the ground).
+### [Algorithm](PseudoCode.md)
 
--   A landing event is previously below 10k feet and (previously getting data, no longer getting data and previously not on the ground) or (now on the ground and previously not on the ground).
-
--   Given the coordinates of the aircraft the coordinates are reverse looked up for a location name. (GeoPY Nomination Geolocator)
-
--   At the time of takeoff a takeoff time is set, which is referenced in the landing event to calculate approximate total flight time.
-
--   A Static map image is created based off location name. (Google Static Maps API) or a screenshot of <https://global.adsbexchange.com/> is created using Selenium/ChromeDriver The selected plane is locked on in the screenshot.
-
--   If the landing event and takeoff events are true, It will output to any of the following built-in output methods. (Twitter, Pushbullet, and Discord all of which can be setup and enabled in config.ini). Outputs the location name, map image and takeoff time if landing. (Tweepy and "Pushbullet.py" and Discord_webhooks)
+## Setup / Install
 
 ### Make sure Python/PIP is installed
 
@@ -45,44 +37,23 @@ apt install python3
 apt install python3-pip
 ```
 
-### Install Colorama and geopy
+### Install Pipenv and Dependencies
 
 ```bash
-pip install colorama
-pip install geopy
+pip install pipenv
+pipenv install
 ```
 
 ### Install Selenium / ChromeDriver or setup Google Static Maps
 
 Selenium/ChromeDriver is used to take a screenshot of the plane on globe.adsbexchange.com. Or use Google Static Maps, which can cost money if over used(No tutorial use <https://developers.google.com/maps/documentation/maps-static/get-api-key> to get to a key).
 
-#### 1. Chromium
-
-```
-sudo apt-get install chromium
-```
-
-#### 2. ChromeDriver
-
-```
-sudo apt-get install chromium-driver
-```
-
-#### 3. Selenium
-
-```
-pip install -U selenium
-```
-
-### Install Pushbullet, Tweepy, and Discord optional output methods already implemented in code, only install the ones you want to use.
+#### Chromium
 
 ```bash
-pip install tweepy
-pip install pushbullet.py
-pip install discord_webhooks
+sudo apt-get install chromium
 ```
-
-Configure these methods of output in config.ini
+These output methods once installed can be configured in planes config you create, using the example plane1.ini
 
 ### Install Screen to run in the background
 
@@ -94,13 +65,21 @@ apt install screen
 
 ```bash
 apt install git
-git clone -b single --single-branch https://github.com/Jxck-S/plane-notify.git
+git clone -b multi --single-branch https://github.com/Jxck-S/plane-notify.git
 cd plane-notify
 ```
 
-### Configure config file with keys and URLs (config.ini)
+### Configure main config file with keys and URLs (mainconf.ini) in configs directory
 
 -   edit them with nano or vi on the running machine or on your pc and transfer the config to where you will be running the bot
+-   If you've setup multiple planes and want to use ADSB Exchange as your source you must have /all endpoint access to their API or it won't work.
+-   Pick the correct api version for ADSB Exchange
+-   Proxy is if your running multiple programs that use the ADSB Exchange, setup the proxy from lemonodor so you don't abuse the ADSB Exchange API, otherwise leave enable false.
+
+### Configure individual planes
+
+-   an example file is given (plane1.ini) plane config files should be in the configs directory, the program looks for any file in that folder with a .ini extension.
+-   each plane should have its own config
 
 ### Enter and create new Screen Session
 
@@ -111,12 +90,23 @@ screen -R <name screen whatever you want>
 ### Start Program
 
 ```bash
-python3 NotifyBot.py
+pipenv run python __main__
 ```
+
+## Using with Docker
+
+Install [docker from their website](https://docs.docker.com/get-docker/). Run the following command from the root of the project.
+
+```bash
+docker-compose up -d
+```
+
+After running this command, dut to the `-d` flag the container will be running in the background. To see the logs of the docker 
 
 ### TODO
 
--   Possibly implement airport name, done by closest airport
 -   General Cleanup
+-   Restructure project to make it proper currently random files because I didn't know how to properly structure a project before. (in progress)
+-   Add proper logging and service to run the program and remove excessive printing.
 
-### [ More Refrences / Documentation](Refrences.md)
+### [More Refrences/Documentation](Refrences.md)

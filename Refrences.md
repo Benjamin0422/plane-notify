@@ -8,6 +8,7 @@
 ## OpenSky
 
 -   <https://opensky-network.org/apidoc/>
+-   <https://github.com/openskynetwork/opensky-api>
 
 ## GeoPy - Location Name Lookup
 
@@ -17,6 +18,7 @@
 ## Colorama
 
 -   <https://github.com/tartley/colorama>
+
 ## Google Static Maps
 
 -   <https://www.geeksforgeeks.org/python-get-google-map-image-specified-location-using-google-static-maps-api/>
@@ -43,3 +45,24 @@
 -   <https://tecadmin.net/setup-selenium-with-chromedriver-on-debian/>
 -   <https://blog.testproject.io/2018/02/20/chrome-headless-selenium-python-linux-servers/>
 -   <https://serverfault.com/questions/172076/how-to-find-the-browser-versions-from-command-line-in-linux-windows>
+-   <https://pypi.org/project/webdriver-manager/>
+
+## Web Driver Manager
+
+<https://pypi.org/project/webdriver-manager/>
+
+## Tabulate
+
+-   <https://pypi.org/project/tabulate/>
+
+## Nearest Airport
+
+-   <https://www.geeksforgeeks.org/python-calculate-distance-between-two-places-using-geopy/>
+
+### OpenFlights / airports.dat
+
+-   <https://openflights.org/data.html>
+
+### OurAirports / airports.csv / regions.csv
+
+-   <https://ourairports.com/data/>

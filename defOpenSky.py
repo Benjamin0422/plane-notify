@@ -1,35 +1,17 @@
-def pullOpenSky(TRACK_PLANE):
+def pull_opensky(planes):
     import configparser
-    config = configparser.ConfigParser()
-    config.read('config.ini')
+    main_config = configparser.ConfigParser()
+    main_config.read('./configs/mainconf.ini')
     from opensky_api import OpenSkyApi
     planeData = None
-    opens_api = OpenSkyApi(username= None if config.get('OPENSKY', 'USERNAME').upper() == "NONE" else config.get('OPENSKY', 'USERNAME'), password= None if config.get('OPENSKY', 'PASSWORD').upper() == "NONE" else config.get('OPENSKY', 'PASSWORD').upper())
+    opens_api = OpenSkyApi(username= None if main_config.get('OPENSKY', 'USERNAME').upper() == "NONE" else main_config.get('OPENSKY', 'USERNAME'), password= None if main_config.get('OPENSKY', 'PASSWORD').upper() == "NONE" else main_config.get('OPENSKY', 'PASSWORD').upper())
     failed = False
+    icao_array = []
+    for key in planes.keys():
+        icao_array.append(key.lower())
     try:
-        planeData = opens_api.get_states(time_secs=0, icao24=TRACK_PLANE.lower())
-    except:
-            print ("OpenSky Error")
+        planeData = opens_api.get_states(time_secs=0, icao24=icao_array)
+    except Exception as e:
+            print ("OpenSky Error", e)
             failed = True
-    if failed is False and planeData != None:
-        plane_Dict = {}
-        geo_alt_m = None
-        for dataStates in planeData.states:
-            plane_Dict['icao'] = (dataStates.icao24).upper()
-            plane_Dict['callsign'] = (dataStates.callsign)
-            plane_Dict['longitude'] = (dataStates.longitude)
-            plane_Dict['latitude'] = (dataStates.latitude)
-            plane_Dict['on_ground'] = (dataStates.on_ground)
-            geo_alt_m = (dataStates.geo_altitude)
-        try:
-            if geo_alt_m != None:
-                plane_Dict['geo_alt_ft'] = geo_alt_m  * 3.281
-            elif plane_Dict['on_ground']:
-                plane_Dict['geo_alt_ft'] = 0
-        except KeyError:
-            pass
-        if plane_Dict == {}:
-            plane_Dict = None
-    else:
-        plane_Dict = None
-    return plane_Dict, failed
+    return planeData, failed
